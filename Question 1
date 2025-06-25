@@ -1,0 +1,38 @@
+import cv2
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+
+# Step 1: Read the image
+img = cv2.imread('your_image.jpg')  # Replace with your image path
+img = cv2.resize(img, (400, 400))   # Optional: resize for easier viewing
+
+# Step 2: Define the sharpening kernel
+sharpen_kernel = np.array([[0, -1, 0],
+                           [-1, 5, -1],
+                           [0, -1, 0]])
+
+# Apply the sharpening kernel using filter2D
+sharpened_img = cv2.filter2D(img, -1, sharpen_kernel)
+
+# Step 3: Display original and sharpened image side by side
+combined = np.hstack((img, sharpened_img))
+cv2.imshow('Original vs Sharpened', combined)
+
+# Step 4: Convert to grayscale for edge detection
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Step 5: Apply Sobel filters
+sobel_x = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)  # Horizontal
+sobel_y = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)  # Vertical
+
+# Convert back to uint8
+sobel_x = cv2.convertScaleAbs(sobel_x)
+sobel_y = cv2.convertScaleAbs(sobel_y)
+
+# Display Sobel edge detection results
+cv2.imshow('Sobel - Horizontal Edges', sobel_x)
+cv2.imshow('Sobel - Vertical Edges', sobel_y)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
