@@ -1,0 +1,62 @@
+import cv2
+import numpy as np
+
+# Load image and convert to grayscale
+img_gray = cv2.imread('your_image.jpg', cv2.IMREAD_GRAYSCALE)
+img_gray = cv2.resize(img_gray, (400, 400))  # Optional resize
+
+# Count pixels with brightness > 200
+threshold = 200
+bright_coords = np.column_stack(np.where(img_gray > threshold))
+print(f"Number of bright pixels (>200): {len(bright_coords)}")
+
+# Convert to BGR to draw in color
+highlighted = cv2.cvtColor(img_gray, cv2.COLOR_GRAY2BGR)
+
+# Draw white dots on bright pixels
+for y, x in bright_coords:
+    cv2.circle(highlighted, (x, y), 1, (255, 255, 255), -1)
+
+cv2.imshow("Highlighted Bright Pixels", highlighted)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+# Load color image
+img_color = cv2.imread('your_image.jpg')
+img_color = cv2.resize(img_color, (400, 400))  # Optional resize
+
+# List of bounding box coordinates (x1, y1, x2, y2)
+boxes = [(50, 60, 150, 120), (200, 180, 300, 250)]
+
+# Draw boxes and add labels
+for i, (x1, y1, x2, y2) in enumerate(boxes):
+    cv2.rectangle(img_color, (x1, y1), (x2, y2), (0, 255, 0), 2)
+    label = f"Object {i+1}"
+    cv2.putText(img_color, label, (x1, y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+
+cv2.imshow("Bounding Boxes", img_color)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+# Create a blank 500x500 image
+canvas = np.zeros((500, 500, 3), dtype=np.uint8)
+
+# Draw red rectangle (no fill)
+cv2.rectangle(canvas, (50, 50), (200, 150), (0, 0, 255), 2)
+
+# Draw green filled circle
+cv2.circle(canvas, (350, 100), 40, (0, 255, 0), -1)
+
+# Draw blue diagonal line
+cv2.line(canvas, (0, 0), (500, 500), (255, 0, 0), 2)
+
+# Add watermark
+text = "YourName"
+(text_width, text_height), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)
+cv2.putText(canvas, text, (500 - text_width - 10, 500 - 10),
+            cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+# Save and show
+cv2.imwrite("output_drawing.png", canvas)
+cv2.imshow("Shapes and Watermark", canvas)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
